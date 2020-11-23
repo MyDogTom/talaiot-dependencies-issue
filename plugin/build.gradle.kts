@@ -15,6 +15,7 @@ plugins {
 }
 
 repositories {
+    maven("https://plugins.gradle.org/m2/")
     // Use JCenter for resolving dependencies.
     jcenter()
 }
@@ -31,6 +32,12 @@ dependencies {
 
     // Use the Kotlin JUnit integration.
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
+
+    implementation("com.cdsap:talaiot:1.4.0")
+    implementation("com.cdsap.talaiot.plugin:base:1.4.0")
+    implementation("com.cdsap.talaiot.plugin:influxdb:1.4.0")
+
+
 }
 
 gradlePlugin {
