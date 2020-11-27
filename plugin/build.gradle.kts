@@ -33,9 +33,9 @@ dependencies {
     // Use the Kotlin JUnit integration.
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
 
-    implementation("com.cdsap:talaiot:1.4.0")
-    implementation("com.cdsap.talaiot.plugin:base:1.4.0")
+    implementation("com.cdsap.talaiot:talaiot:1.4.0")
     implementation("com.cdsap.talaiot.plugin:influxdb:1.4.0")
+    implementation("com.cdsap.talaiot:influxdb-publisher:1.4.0")
 
 
 }

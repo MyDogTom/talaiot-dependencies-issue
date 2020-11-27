@@ -3,14 +3,16 @@
  */
 package com.github.mydogtom.talaiot
 
+import com.cdsap.talaiot.Talaiot
+import com.cdsap.talaiot.plugin.influxdb.InfluxdbConfigurationProvider
 import com.cdsap.talaiot.plugin.influxdb.InfluxdbExtension
-import org.gradle.api.Project
 import org.gradle.api.Plugin
+import org.gradle.api.Project
 
 /**
  * A simple 'hello world' plugin.
  */
-class TalaiotCustomPluginPlugin: Plugin<Project> {
+class TalaiotCustomPluginPlugin : Plugin<Project> {
     override fun apply(project: Project) {
 
         configureTalaiot(project)
@@ -24,39 +26,42 @@ class TalaiotCustomPluginPlugin: Plugin<Project> {
     }
 
     private fun configureTalaiot(project: Project) {
-        project.plugins.apply("com.cdsap.talaiot.plugin.influxdb")
-        project.extensions.configure(InfluxdbExtension::class.java) { talaiotExtension ->
-            talaiotExtension.metrics {
-                gitMetrics = false
-                customMetrics(
-                    ProjectFolderMetric()
-                )
+        Talaiot(
+            InfluxdbExtension::class.java,
+            InfluxdbConfigurationProvider(project)
+        ).setUpPlugin(project)
 
-                talaiotExtension.publishers {
-                    influxDbPublisher {
-                        dbName = "test-database"
-                        url = "to-do"
-                        taskMetricName = "task"
-                        buildMetricName = "build"
-                        publishTaskMetrics = true
-                    }
-                }
+        val talaiotExtension = project.extensions.getByName("talaiot") as InfluxdbExtension
 
-                talaiotExtension.filter {
-                    build {
-                        success = true
-                        requestedTasks {
-                            excludes = arrayOf("myTask")
-                        }
-                    }
-                }
+        talaiotExtension.metrics {
+            gitMetrics = false
+            customMetrics(
+                ProjectFolderMetric()
+            )
+        }
 
-                talaiotExtension.ignoreWhen {
-                    envName = "RUN_ON_CI"
-                    envValue = "true"
+        talaiotExtension.publishers {
+            influxDbPublisher {
+                dbName = "test-database"
+                url = "to-do"
+                taskMetricName = "task"
+                buildMetricName = "build"
+                publishTaskMetrics = true
+            }
+        }
+
+        talaiotExtension.filter {
+            build {
+                success = true
+                requestedTasks {
+                    excludes = arrayOf("myTask")
                 }
             }
         }
 
+        talaiotExtension.ignoreWhen {
+            envName = "RUN_ON_CI"
+            envValue = "true"
+        }
     }
 }
